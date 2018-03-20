@@ -48,6 +48,11 @@ public class Keuangan extends javax.swing.JFrame {
                 "No", "Kode Transaksi", "Nama Pegawai", "Pemasukkan", "Pengeluaran", "Total"
             }
         ));
+        tblPembelian.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPembelianMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblPembelian);
 
         btnHapus.setText("Hapus");
@@ -99,6 +104,10 @@ public class Keuangan extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tblPembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPembelianMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblPembelianMouseClicked
 
     /**
      * @param args the command line arguments

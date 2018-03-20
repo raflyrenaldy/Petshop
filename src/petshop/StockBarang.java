@@ -6,22 +6,43 @@
 package petshop;
 import java.awt.HeadlessException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
 /**
  *
  * @author Rafly Renaldy
  */
 public class StockBarang extends javax.swing.JFrame {
+public boolean databaru;
 
     /**
      * Creates new form StockBarang
      */
     public StockBarang() {
         initComponents();
-        
-        
+        tampil_combo();
+        GetData();
     }
+    private void cleardata(){
+        txtNamaBarang.setText("");
+        txtHarga.setText("");
+        txtJumlah.setText("");
+        txtUkuran.setText("");
+    }
+private void GetData(){ // menampilkan data dari database
+    try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from barang");
+        tblPembelian.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,6 +69,9 @@ public class StockBarang extends javax.swing.JFrame {
         btnCreate = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtJumlah = new javax.swing.JTextField();
+        btnUbah = new javax.swing.JButton();
+        txtKodeBarang = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -56,11 +80,16 @@ public class StockBarang extends javax.swing.JFrame {
 
         jLabel5.setText("Ukuran");
 
-        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua" }));
 
         jLabel2.setText("Nama Barang");
 
         btnCari.setText("Cari ");
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Harga");
 
@@ -72,10 +101,20 @@ public class StockBarang extends javax.swing.JFrame {
                 "No", "Kode Barang", "Nama Barang", "Harga", "Jenis", "Jumlah"
             }
         ));
+        tblPembelian.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPembelianMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblPembelian);
 
         btnHapus.setText("Hapus");
         btnHapus.setToolTipText("");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Jenis");
 
@@ -89,7 +128,22 @@ public class StockBarang extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Jumlah");
+        jLabel6.setText("Stock");
+
+        txtJumlah.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtJumlahMouseClicked(evt);
+            }
+        });
+
+        btnUbah.setText("Ubah");
+        btnUbah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Kode Barang");
 
         jMenu1.setText("File");
 
@@ -110,7 +164,7 @@ public class StockBarang extends javax.swing.JFrame {
                     .addComponent(cmbAksi, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnHapus)
-                        .addGap(73, 73, 73)
+                        .addGap(69, 69, 69)
                         .addComponent(btnCari)))
                 .addGap(26, 26, 26))
             .addGroup(layout.createSequentialGroup()
@@ -125,26 +179,33 @@ public class StockBarang extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel1))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(cmbJenis, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtHarga, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
-                                .addComponent(txtNamaBarang)
-                                .addComponent(txtUkuran, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbJenis, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtHarga, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                            .addComponent(txtNamaBarang)
+                            .addComponent(txtUkuran, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtKodeBarang))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(181, 181, 181)
+                .addGap(118, 118, 118)
+                .addComponent(btnUbah)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCreate)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(610, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtKodeBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -163,7 +224,7 @@ public class StockBarang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 54, Short.MAX_VALUE)
+                        .addGap(0, 51, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnCari)
                             .addComponent(btnHapus))
@@ -177,28 +238,133 @@ public class StockBarang extends javax.swing.JFrame {
                             .addComponent(jLabel6)
                             .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(6, 6, 6)
-                        .addComponent(btnCreate)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCreate)
+                            .addComponent(btnUbah))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+public void tampil_combo()
+    {
+        try {
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        Statement stt = conn.createStatement();
+        String sql = "select kode_barang from barang order by kode_barang asc";      // disini saya menampilkan NIM, anda dapat menampilkan
+        ResultSet res = stt.executeQuery(sql);                                // yang anda ingin kan
+        
+        while(res.next()){
+            Object[] ob = new Object[3];
+            ob[0] = res.getString(1);
+            
+            cmbAksi.addItem((String) ob[0]);                                      // fungsi ini bertugas menampung isi dari database
+        }
+        res.close(); stt.close();
+         
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
+    if (databaru == true) { // prosess simpan atau edit
         
-        
+    } else {
         try {
             String sql = "INSERT INTO BARANG(nama_barang, jenis, harga,ukuran, stock) VALUES ('"+txtNamaBarang.getText()+"','"+cmbJenis.getSelectedItem()+"','"+txtHarga.getText()+"','"+txtUkuran.getText()+"','"+txtJumlah.getText()+"')";
-            java.sql.Connection conn=(Connection)config.configDB();
-            java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.execute();
-            JOptionPane.showMessageDialog(null, "Penyimpanan Data Berhasil");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
         }
+    }
+    GetData();
+        cleardata();
     }//GEN-LAST:event_btnCreateActionPerformed
 
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        // TODO add your handling code here:
+        try { // hapus data
+        String sql ="delete from barang where kode_barang='"+cmbAksi.getSelectedItem()+"'";
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        pst.execute();
+        JOptionPane.showMessageDialog(null, "Data akan dihapus");
+        
+    } catch (SQLException | HeadlessException e) {}
+    
+    GetData();
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
+        // TODO add your handling code here:
+        try {
+            String sql = "update barang SET nama_barang='"+txtNamaBarang.getText()+"',harga='"+txtHarga.getText()+"',Jenis='"+cmbJenis.getSelectedItem()+"',ukuran='"+txtUkuran.getText()+"',stock='"+txtJumlah.getText()+"' where kode_barang='"+txtKodeBarang.getText()+"'";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    
+    GetData();
+    cleardata();
+    }//GEN-LAST:event_btnUbahActionPerformed
+
+    private void txtJumlahMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtJumlahMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_txtJumlahMouseClicked
+
+    private void tblPembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPembelianMouseClicked
+        // TODO add your handling code here:
+         try {
+        int row =tblPembelian.getSelectedRow();
+        String tabel_klik=(tblPembelian.getModel().getValueAt(row, 0).toString());
+        java.sql.Connection conn =(java.sql.Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from barang where kode_barang ='"+tabel_klik+"'");
+        if(sql.next()){
+            String kode_barang = sql.getString("kode_barang");
+            txtKodeBarang.setText(kode_barang);
+            String nama_barang = sql.getString("nama_barang");
+            txtNamaBarang.setText(nama_barang);            
+            String harga = sql.getString("harga");
+            txtHarga.setText(harga);
+            String ukuran = sql.getString("ukuran");
+            txtUkuran.setText(ukuran);
+            String stock = sql.getString("stock");
+            txtJumlah.setText(stock);
+            
+}
+    } catch (Exception e) {}
+    }//GEN-LAST:event_tblPembelianMouseClicked
+
+    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
+        // TODO add your handling code here:
+        if(cmbAksi.getSelectedItem()=="Semua"){
+        GetData();
+        
+        }else{
+            
+            
+        try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from barang where kode_barang='"+cmbAksi.getSelectedItem()+"'");
+        tblPembelian.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+            }
+    }//GEN-LAST:event_btnCariActionPerformed
+    
     /**
      * @param args the command line arguments
      */
@@ -238,8 +404,10 @@ public class StockBarang extends javax.swing.JFrame {
     private javax.swing.JButton btnCari;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnUbah;
     private javax.swing.JComboBox<String> cmbAksi;
     private javax.swing.JComboBox<String> cmbJenis;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -252,6 +420,7 @@ public class StockBarang extends javax.swing.JFrame {
     private javax.swing.JTable tblPembelian;
     private javax.swing.JTextField txtHarga;
     private javax.swing.JTextField txtJumlah;
+    private javax.swing.JTextField txtKodeBarang;
     private javax.swing.JTextField txtNamaBarang;
     private javax.swing.JTextField txtUkuran;
     // End of variables declaration//GEN-END:variables
