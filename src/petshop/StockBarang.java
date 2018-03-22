@@ -27,7 +27,9 @@ public boolean databaru;
         GetData();
     }
     private void cleardata(){
+        txtKodeBarang.setText("");
         txtNamaBarang.setText("");
+       
         txtHarga.setText("");
         txtJumlah.setText("");
         txtUkuran.setText("");
@@ -81,6 +83,11 @@ private void GetData(){ // menampilkan data dari database
         jLabel5.setText("Ukuran");
 
         cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua" }));
+        cmbAksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbAksiActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Nama Barang");
 
@@ -270,9 +277,7 @@ public void tampil_combo()
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
-    if (databaru == true) { // prosess simpan atau edit
-        
-    } else {
+    
         try {
             String sql = "INSERT INTO BARANG(nama_barang, jenis, harga,ukuran, stock) VALUES ('"+txtNamaBarang.getText()+"','"+cmbJenis.getSelectedItem()+"','"+txtHarga.getText()+"','"+txtUkuran.getText()+"','"+txtJumlah.getText()+"')";
             java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
@@ -282,7 +287,7 @@ public void tampil_combo()
         } catch (SQLException | HeadlessException e) {
             JOptionPane.showMessageDialog(null, e);
         }
-    }
+    
     GetData();
         cleardata();
     }//GEN-LAST:event_btnCreateActionPerformed
@@ -365,6 +370,10 @@ public void tampil_combo()
     }
             }
     }//GEN-LAST:event_btnCariActionPerformed
+
+    private void cmbAksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAksiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbAksiActionPerformed
     
     /**
      * @param args the command line arguments

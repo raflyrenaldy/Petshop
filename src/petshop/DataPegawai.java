@@ -5,6 +5,14 @@
  */
 package petshop;
 
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
+
 /**
  *
  * @author Rafly Renaldy
@@ -16,8 +24,47 @@ public class DataPegawai extends javax.swing.JFrame {
      */
     public DataPegawai() {
         initComponents();
+        GetData();
+        tampil_combo();
     }
+   private void cleardata(){
+       txtKodePegawai.setText("");
+        txtNamaPegawai.setText("");
+        txtAlamat.setText("");
+        txtNoHp.setText("");
+    }
+private void GetData(){ // menampilkan data dari database
+    try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from pegawai");
+        tblPegawai.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+}
 
+public void tampil_combo()
+    {
+        try {
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        Statement stt = conn.createStatement();
+        String sql = "select kode_pegawai from pegawai order by kode_pegawai asc";      // disini saya menampilkan NIM, anda dapat menampilkan
+        ResultSet res = stt.executeQuery(sql);                                // yang anda ingin kan
+        
+        while(res.next()){
+            Object[] ob = new Object[3];
+            ob[0] = res.getString(1);
+            
+            cmbAksi.addItem((String) ob[0]);                                      // fungsi ini bertugas menampung isi dari database
+        }
+        res.close(); stt.close();
+         
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -32,7 +79,7 @@ public class DataPegawai extends javax.swing.JFrame {
         btnCreate = new javax.swing.JButton();
         btnCari = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblPembelian = new javax.swing.JTable();
+        tblPegawai = new javax.swing.JTable();
         btnHapus = new javax.swing.JButton();
         btnUbah = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -45,6 +92,8 @@ public class DataPegawai extends javax.swing.JFrame {
         cmbJenisKelamin = new javax.swing.JComboBox<>();
         txtNoHp = new javax.swing.JTextField();
         cmbAgama = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        txtKodePegawai = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -56,10 +105,20 @@ public class DataPegawai extends javax.swing.JFrame {
         jLabel5.setText("Agama");
 
         btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
 
         btnCari.setText("Cari ");
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
 
-        tblPembelian.setModel(new javax.swing.table.DefaultTableModel(
+        tblPegawai.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -67,17 +126,32 @@ public class DataPegawai extends javax.swing.JFrame {
                 "No", "Kode Pegawai", "Nama Pegawai", "Alamat", "Jenis Kelamin", "No Hp", "Agama"
             }
         ));
-        jScrollPane1.setViewportView(tblPembelian);
+        tblPegawai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPegawaiMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblPegawai);
 
         btnHapus.setText("Hapus");
         btnHapus.setToolTipText("");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
 
         btnUbah.setText("Ubah");
         btnUbah.setToolTipText("");
+        btnUbah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nama Pegawai");
 
-        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua" }));
 
         jLabel2.setText("Alamat");
 
@@ -87,9 +161,13 @@ public class DataPegawai extends javax.swing.JFrame {
         txtAlamat.setRows(5);
         jScrollPane2.setViewportView(txtAlamat);
 
-        cmbJenisKelamin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbJenisKelamin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pria", "Wanita" }));
 
-        cmbAgama.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbAgama.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Islam", "Kristen", "Katolik", "Hindu", "Buddha", "Kong Hu Cu" }));
+
+        jLabel6.setText("Kode Pegawai");
+
+        txtKodePegawai.setEnabled(false);
 
         jMenu1.setText("File");
 
@@ -107,24 +185,6 @@ public class DataPegawai extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel5))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(cmbJenisKelamin, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane2)
-                                .addComponent(txtNamaPegawai)
-                                .addComponent(txtNoHp))
-                            .addComponent(cmbAgama, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(4, 4, 4)
-                        .addComponent(btnCreate)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,16 +193,39 @@ public class DataPegawai extends javax.swing.JFrame {
                                 .addComponent(cmbAksi, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(btnHapus)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnUbah)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(btnCari))))))
+                                    .addGap(73, 73, 73)
+                                    .addComponent(btnCari)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cmbJenisKelamin, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2)
+                            .addComponent(txtNamaPegawai)
+                            .addComponent(txtNoHp)
+                            .addComponent(cmbAgama, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtKodePegawai))
+                        .addGap(4, 4, 4)
+                        .addComponent(btnCreate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUbah)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtKodePegawai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtNamaPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -163,11 +246,11 @@ public class DataPegawai extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(cmbAgama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCreate))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                    .addComponent(btnCreate)
+                    .addComponent(btnUbah))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCari)
-                    .addComponent(btnUbah)
                     .addComponent(btnHapus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbAksi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -178,6 +261,94 @@ public class DataPegawai extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        // TODO add your handling code here:
+        try {
+            String sql = "INSERT INTO pegawai(nama_pegawai, alamat, jenis_kelamin, no_hp, agama) VALUES ('"+txtNamaPegawai.getText()+"','"+txtAlamat.getText()+"','"+cmbJenisKelamin.getSelectedItem()+"','"+txtNoHp.getText()+"','"+cmbAgama.getSelectedItem()+"')";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+          GetData();
+        cleardata();
+    }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        // TODO add your handling code here:
+         try { // hapus data
+        String sql ="delete from pegawai where kode_pegawai='"+cmbAksi.getSelectedItem()+"'";
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        pst.execute();
+        JOptionPane.showMessageDialog(null, "Data akan dihapus");
+        
+    } catch (SQLException | HeadlessException e) {}
+    
+    GetData();
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
+        // TODO add your handling code here:
+        try {
+            String sql = "update pegawai SET nama_pegawai='"+txtNamaPegawai.getText()+"',alamat='"+txtAlamat.getText()+"',jenis_kelamin='"+cmbJenisKelamin.getSelectedItem()+"',no_hp='"+txtNoHp.getText()+"',agama='"+cmbAgama.getSelectedItem()+"' where kode_pegawai='"+txtKodePegawai.getText()+"'";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    
+    GetData();
+    cleardata();
+    }//GEN-LAST:event_btnUbahActionPerformed
+
+    private void tblPegawaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPegawaiMouseClicked
+        // TODO add your handling code here:
+        try {
+        int row =tblPegawai.getSelectedRow();
+        String tabel_klik=(tblPegawai.getModel().getValueAt(row, 0).toString());
+        java.sql.Connection conn =(java.sql.Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from pegawai where kode_pegawai ='"+tabel_klik+"'");
+        if(sql.next()){
+            String kode_pegawai = sql.getString("kode_pegawai");
+            txtKodePegawai.setText(kode_pegawai);
+            String nama_pegawai = sql.getString("nama_pegawai");
+            txtNamaPegawai.setText(nama_pegawai);            
+            String alamat = sql.getString("alamat");
+            txtAlamat.setText(alamat);
+            String no_hp = sql.getString("no_hp");
+            txtNoHp.setText(no_hp);
+           
+            
+}
+    } catch (Exception e) {}
+    }//GEN-LAST:event_tblPegawaiMouseClicked
+
+    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
+        // TODO add your handling code here:
+        if(cmbAksi.getSelectedItem()=="Semua"){
+        GetData();
+        
+        }else{
+            
+            
+        try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from pegawai where kode_pegawai='"+cmbAksi.getSelectedItem()+"'");
+        tblPegawai.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+            }
+    }//GEN-LAST:event_btnCariActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,13 +398,15 @@ public class DataPegawai extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable tblPembelian;
+    private javax.swing.JTable tblPegawai;
     private javax.swing.JTextArea txtAlamat;
+    private javax.swing.JTextField txtKodePegawai;
     private javax.swing.JTextField txtNamaPegawai;
     private javax.swing.JTextField txtNoHp;
     // End of variables declaration//GEN-END:variables
