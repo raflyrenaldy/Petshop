@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 21, 2018 at 04:20 AM
+-- Generation Time: Mar 29, 2018 at 02:43 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.1
 
@@ -98,9 +98,9 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`kode_barang`, `nama_barang`, `jenis`, `harga`, `ukuran`, `stock`) VALUES
-('BG000001', '123', 'Item 2', 2312, '250 gr', 12),
-('BG000003', 'Siapa', 'Kucing', 222, '31', 13),
-('BG000004', '123', 'Kucing', 555, '123', 23),
+('BG000001', '123', 'Item 2', 2312, '250 gr', 53),
+('BG000003', 'Siapa', 'Kucing', 222, '31', 668),
+('BG000004', '123', 'Kucing', 555, '123', 35),
 ('BG000005', 'rOLEX', 'Kucing', 2000, '250 gr', 12);
 
 --
@@ -132,10 +132,9 @@ DELIMITER ;
 CREATE TABLE `keuangan` (
   `kode_keuangan` varchar(255) NOT NULL,
   `kode_transaksi` varchar(255) NOT NULL,
-  `kode_pegawai` int(11) NOT NULL,
+  `kode_pegawai` varchar(255) NOT NULL,
   `pemasukkan` int(11) NOT NULL,
   `pengeluaran` int(11) NOT NULL,
-  `saldo` int(11) NOT NULL,
   `dates` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -180,7 +179,8 @@ CREATE TABLE `pegawai` (
 
 INSERT INTO `pegawai` (`kode_pegawai`, `nama_pegawai`, `alamat`, `jenis_kelamin`, `no_hp`, `agama`) VALUES
 ('PG000001', 'Rafly Renaldy', 'Jln Golf Raya No.6', 'Pria', '089662867871', 'Islam'),
-('PG000002', 'Sendy Hendriawan', 'Jln Cikutra No. 204', 'Pria', '0896522153', 'Islam');
+('PG000002', 'Sendy Hendriawan', 'Jln Cikutra No. 204', 'Pria', '0896522153', 'Islam'),
+('PG000003', 'rasd', '123123123123', 'Wanita', '213123', 'Islam');
 
 --
 -- Triggers `pegawai`
@@ -239,6 +239,7 @@ DELIMITER $$
 CREATE TRIGGER `updt` AFTER INSERT ON `pembelian` FOR EACH ROW BEGIN
 	UPDATE barang set stock = stock+new.jumlah
     where kode_barang = new.kode_barang;
+        INSERT INTO KEUANGAN (kode_transaksi, kode_pegawai, pengeluaran, dates) values (new.kode_pembelian, new.kode_pegawai, new.total, sysdate());
 END
 $$
 DELIMITER ;
@@ -280,6 +281,7 @@ DELIMITER $$
 CREATE TRIGGER `pengurangan` AFTER INSERT ON `penjualan` FOR EACH ROW BEGIN
 	UPDATE BARANG SET STOCK = STOCK - NEW.JUMLAH
     WHERE KODE_BARANG = NEW.KODE_BARANG;
+    INSERT INTO KEUANGAN (kode_transaksi, kode_pegawai, pemasukkan, dates) values (new.kode_penjualan, new.kode_pegawai, new.total, sysdate());
  END
 $$
 DELIMITER ;
@@ -323,7 +325,8 @@ ALTER TABLE `barang`
 --
 ALTER TABLE `keuangan`
   ADD PRIMARY KEY (`kode_keuangan`),
-  ADD KEY `kode_pegawai` (`kode_pegawai`);
+  ADD KEY `kode_pegawai` (`kode_pegawai`),
+  ADD KEY `pegawai` (`kode_pegawai`);
 
 --
 -- Indexes for table `pegawai`

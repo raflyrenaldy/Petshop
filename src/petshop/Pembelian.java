@@ -73,6 +73,7 @@ public void tampil_combo()
     }
 public void tampil_combo2()
     {
+        
         try {
         java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
         Statement stt = conn.createStatement();
@@ -268,6 +269,8 @@ txtTotal.setText(String.valueOf(total));
             }
         });
 
+        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih", "Semua" }));
+
         jLabel7.setText("Kode Transaksi");
 
         txtKodeTransaksi.setEnabled(false);
@@ -320,7 +323,7 @@ txtTotal.setText(String.valueOf(total));
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 6, Short.MAX_VALUE)
+                        .addGap(0, 55, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -354,23 +357,22 @@ txtTotal.setText(String.valueOf(total));
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnCreate)
+                                            .addComponent(btnUbah, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnHitung))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGap(0, 411, Short.MAX_VALUE)
+                                        .addComponent(txtPemasukkan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(cmbAksi, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
-                                                .addComponent(txtPemasukkan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(btnHapus)
                                                 .addGap(73, 73, 73)
                                                 .addComponent(btnCari)))
-                                        .addGap(16, 16, 16))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnCreate)
-                                            .addComponent(btnUbah, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(btnHitung)))
+                                        .addGap(16, 16, 16))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(61, 61, 61)
                                 .addComponent(txtKode, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -401,7 +403,9 @@ txtTotal.setText(String.valueOf(total));
                                     .addComponent(btnCari)
                                     .addComponent(btnHapus)
                                     .addComponent(txtPemasukkan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbAksi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -424,9 +428,7 @@ txtTotal.setText(String.valueOf(total));
                                     .addComponent(jLabel6)
                                     .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnUbah))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addComponent(cmbAksi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30))
                     .addGroup(layout.createSequentialGroup()
@@ -445,14 +447,6 @@ txtTotal.setText(String.valueOf(total));
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.execute();
         
-          //String sql3 = "select kode_pembelian from pembelian order by kode_pembelian desc limit 1";
-          //java.sql.PreparedStatement pst3 = conn.prepareStatement(sql3);
-          //pst3.execute();
-           //txtKode.setText(pst3.toString());
-            //String sql2 = "INSERT INTO keuangan(kode_transaksi, kode_pegawai, pemasukkan, pengeluaran, saldo, dates) VALUES ('"+txtKode.getText()+"','"+cmbIdPegawai.getSelectedItem()+"','"+txtPemasukkan.getText()+"','"+txtTotal.getText()+"')";
-            //java.sql.PreparedStatement pst2 = conn.prepareStatement(sql2);
-            
-           // pst2.execute();
             JOptionPane.showMessageDialog(null, "berhasil disimpan");
         } catch (SQLException | HeadlessException e) {
             JOptionPane.showMessageDialog(null, e);
@@ -464,18 +458,7 @@ txtTotal.setText(String.valueOf(total));
 
     private void txtNamaBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaBarangActionPerformed
         // TODO add your handling code here:
-         try {
-        Connection conn;
-        conn = (Connection)koneksi.koneksiDB();
-        java.sql.Statement stm = conn.createStatement();
-        java.sql.ResultSet sql = stm.executeQuery("select nama_barang, harga from barang where kode_barang='"+cmbKodeBarang.getSelectedItem()+"'");
-        String harga = sql.getString("harga");
-            txtHarga.setText(harga);
-             String nama_barang = sql.getString("nama_barang");
-            txtNamaBarang.setText(nama_barang);
-    }
-    catch (SQLException | HeadlessException e) {
-    }
+       
     }//GEN-LAST:event_txtNamaBarangActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
@@ -490,7 +473,7 @@ txtTotal.setText(String.valueOf(total));
     } catch (SQLException | HeadlessException e) {}
     
     GetData();
-    tampil_combo();
+    
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
@@ -500,7 +483,7 @@ txtTotal.setText(String.valueOf(total));
             java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+            JOptionPane.showMessageDialog(null, "berhasil diubah");
         } catch (SQLException | HeadlessException e) {
             JOptionPane.showMessageDialog(null, e);
         }
