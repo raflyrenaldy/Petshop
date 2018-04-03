@@ -18,7 +18,7 @@ public class Petshop {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Home hm = new Home();
+        Login hm = new Login();
         hm.setVisible(true);
     }
     
