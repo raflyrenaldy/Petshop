@@ -5,6 +5,13 @@
  */
 package petshop;
 
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import net.proteanit.sql.DbUtils;
+
 /**
  *
  * @author Rafly Renaldy
@@ -16,6 +23,40 @@ public class Keuangan extends javax.swing.JFrame {
      */
     public Keuangan() {
         initComponents();
+        GetData();
+        tampil_combo();
+    }
+    
+        private void GetData(){ // menampilkan data dari database
+    try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+           java.sql.ResultSet sql = stm.executeQuery("Select * from keuangan order by kode_keuangan");
+        tblKeuangan.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+}
+public void tampil_combo()
+    {
+        try {
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        Statement stt = conn.createStatement();
+        String sql = "select kode_keuangan from keuangan order by kode_keuangan asc";      // disini saya menampilkan NIM, anda dapat menampilkan
+        ResultSet res = stt.executeQuery(sql);                                // yang anda ingin kan
+        
+        while(res.next()){
+            Object[] ob = new Object[3];
+            ob[0] = res.getString(1);
+            
+            cmbAksi.addItem((String) ob[0]);                                      // fungsi ini bertugas menampung isi dari database
+        }
+        res.close(); stt.close();
+         
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -29,40 +70,52 @@ public class Keuangan extends javax.swing.JFrame {
 
         btnCari = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblPembelian = new javax.swing.JTable();
-        btnHapus = new javax.swing.JButton();
+        tblKeuangan = new javax.swing.JTable();
         cmbAksi = new javax.swing.JComboBox<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Keuangan");
 
         btnCari.setText("Cari ");
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
 
-        tblPembelian.setModel(new javax.swing.table.DefaultTableModel(
+        tblKeuangan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "No", "Kode Transaksi", "Nama Pegawai", "Pemasukkan", "Pengeluaran", "Total"
+                "No", "Kode Transaksi", "Nama Pegawai", "Pemasukkan", "Pengeluaran"
             }
         ));
-        tblPembelian.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblKeuangan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblPembelianMouseClicked(evt);
+                tblKeuanganMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblPembelian);
+        jScrollPane1.setViewportView(tblKeuangan);
 
-        btnHapus.setText("Hapus");
-        btnHapus.setToolTipText("");
-
-        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbAksi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih", "Semua" }));
+        cmbAksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbAksiActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
         jMenuItem1.setText("Exit");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
@@ -79,22 +132,16 @@ public class Keuangan extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(cmbAksi, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnHapus)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnCari)
-                                .addGap(63, 63, 63)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnCari)
+                            .addComponent(cmbAksi, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(16, 16, 16))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCari)
-                    .addComponent(btnHapus))
+                .addComponent(btnCari)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbAksi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -105,9 +152,42 @@ public class Keuangan extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tblPembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPembelianMouseClicked
+    private void tblKeuanganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKeuanganMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_tblPembelianMouseClicked
+        
+    }//GEN-LAST:event_tblKeuanganMouseClicked
+
+    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
+        // TODO add your handling code here:
+         if(cmbAksi.getSelectedItem()=="Semua"){
+        GetData();
+        
+        }else{
+            
+            
+        try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from keuangan where kode_keuangan='"+cmbAksi.getSelectedItem()+"'");
+        tblKeuangan.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+            }
+         cmbAksi.setSelectedItem("Pilih");
+    }//GEN-LAST:event_btnCariActionPerformed
+
+    private void cmbAksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAksiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbAksiActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        setVisible(false);
+        
+        
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -146,12 +226,11 @@ public class Keuangan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCari;
-    private javax.swing.JButton btnHapus;
     private javax.swing.JComboBox<String> cmbAksi;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblPembelian;
+    private javax.swing.JTable tblKeuangan;
     // End of variables declaration//GEN-END:variables
 }

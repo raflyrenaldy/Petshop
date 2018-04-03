@@ -18,6 +18,8 @@ public class Petshop {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Home hm = new Home();
+        hm.setVisible(true);
     }
     
 }
