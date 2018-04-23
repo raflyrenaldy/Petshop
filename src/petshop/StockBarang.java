@@ -45,6 +45,56 @@ private void GetData(){ // menampilkan data dari database
     catch (SQLException | HeadlessException e) {
     }
 }
+  public void insert_data(){
+            try {
+            String sql = "INSERT INTO BARANG(nama_barang, jenis, harga,ukuran, stock) VALUES ('"+txtNamaBarang.getText()+"','"+cmbJenis.getSelectedItem()+"','"+txtHarga.getText()+"','"+txtUkuran.getText()+"','"+txtJumlah.getText()+"')";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        }
+        public void delete_data(){
+            try { // hapus data
+        String sql ="delete from barang where kode_barang='"+cmbAksi.getSelectedItem()+"'";
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        pst.execute();
+        JOptionPane.showMessageDialog(null, "Data akan dihapus");
+        
+    } catch (SQLException | HeadlessException e) {}
+        }
+        public void search_data(){
+             if(cmbAksi.getSelectedItem()=="Semua"){
+        GetData();
+        
+        }else{
+            
+            
+        try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from barang where kode_barang='"+cmbAksi.getSelectedItem()+"'");
+        tblPembelian.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+            }
+        }
+        public void update_data(){
+            try {
+            String sql = "update barang SET nama_barang='"+txtNamaBarang.getText()+"',harga='"+txtHarga.getText()+"',Jenis='"+cmbJenis.getSelectedItem()+"',ukuran='"+txtUkuran.getText()+"',stock='"+txtJumlah.getText()+"' where kode_barang='"+txtKodeBarang.getText()+"'";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -284,15 +334,7 @@ public void tampil_combo()
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
     
-        try {
-            String sql = "INSERT INTO BARANG(nama_barang, jenis, harga,ukuran, stock) VALUES ('"+txtNamaBarang.getText()+"','"+cmbJenis.getSelectedItem()+"','"+txtHarga.getText()+"','"+txtUkuran.getText()+"','"+txtJumlah.getText()+"')";
-            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil disimpan");
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+        insert_data();
     
     GetData();
         cleardata();
@@ -300,29 +342,14 @@ public void tampil_combo()
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
         // TODO add your handling code here:
-        try { // hapus data
-        String sql ="delete from barang where kode_barang='"+cmbAksi.getSelectedItem()+"'";
-        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-        pst.execute();
-        JOptionPane.showMessageDialog(null, "Data akan dihapus");
-        
-    } catch (SQLException | HeadlessException e) {}
+        delete_data();
     
     GetData();
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
         // TODO add your handling code here:
-        try {
-            String sql = "update barang SET nama_barang='"+txtNamaBarang.getText()+"',harga='"+txtHarga.getText()+"',Jenis='"+cmbJenis.getSelectedItem()+"',ukuran='"+txtUkuran.getText()+"',stock='"+txtJumlah.getText()+"' where kode_barang='"+txtKodeBarang.getText()+"'";
-            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil disimpan");
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+        update_data();
     
     GetData();
     cleardata();
@@ -359,22 +386,7 @@ public void tampil_combo()
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
         // TODO add your handling code here:
-        if(cmbAksi.getSelectedItem()=="Semua"){
-        GetData();
-        
-        }else{
-            
-            
-        try {
-        Connection conn;
-        conn = (Connection)koneksi.koneksiDB();
-        java.sql.Statement stm = conn.createStatement();
-        java.sql.ResultSet sql = stm.executeQuery("select * from barang where kode_barang='"+cmbAksi.getSelectedItem()+"'");
-        tblPembelian.setModel(DbUtils.resultSetToTableModel(sql));
-    }
-    catch (SQLException | HeadlessException e) {
-    }
-            }
+       search_data();
     }//GEN-LAST:event_btnCariActionPerformed
 
     private void cmbAksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAksiActionPerformed

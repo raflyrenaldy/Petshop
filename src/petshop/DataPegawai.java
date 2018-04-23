@@ -44,7 +44,56 @@ private void GetData(){ // menampilkan data dari database
     catch (SQLException | HeadlessException e) {
     }
 }
-
+public void insert_data(){
+     try {
+            String sql = "INSERT INTO pegawai(nama_pegawai, alamat, jenis_kelamin, no_hp, agama) VALUES ('"+txtNamaPegawai.getText()+"','"+txtAlamat.getText()+"','"+cmbJenisKelamin.getSelectedItem()+"','"+txtNoHp.getText()+"','"+cmbAgama.getSelectedItem()+"')";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+}
+public void update_data(){
+    try {
+            String sql = "update pegawai SET nama_pegawai='"+txtNamaPegawai.getText()+"',alamat='"+txtAlamat.getText()+"',jenis_kelamin='"+cmbJenisKelamin.getSelectedItem()+"',no_hp='"+txtNoHp.getText()+"',agama='"+cmbAgama.getSelectedItem()+"' where kode_pegawai='"+txtKodePegawai.getText()+"'";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+}
+public void delete_data(){
+      try { // hapus data
+        String sql ="delete from pegawai where kode_pegawai='"+cmbAksi.getSelectedItem()+"'";
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        pst.execute();
+        JOptionPane.showMessageDialog(null, "Data akan dihapus");
+        
+    } catch (SQLException | HeadlessException e) {}
+}
+public void search_data(){
+     if(cmbAksi.getSelectedItem()=="Semua"){
+        GetData();
+        
+        }else{
+            
+            
+        try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select * from pegawai where kode_pegawai='"+cmbAksi.getSelectedItem()+"'");
+        tblPegawai.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+            }
+}
 public void tampil_combo()
     {
         try {
@@ -270,45 +319,20 @@ public void tampil_combo()
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
-        try {
-            String sql = "INSERT INTO pegawai(nama_pegawai, alamat, jenis_kelamin, no_hp, agama) VALUES ('"+txtNamaPegawai.getText()+"','"+txtAlamat.getText()+"','"+cmbJenisKelamin.getSelectedItem()+"','"+txtNoHp.getText()+"','"+cmbAgama.getSelectedItem()+"')";
-            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil disimpan");
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+       insert_data();
           GetData();
         cleardata();
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
         // TODO add your handling code here:
-         try { // hapus data
-        String sql ="delete from pegawai where kode_pegawai='"+cmbAksi.getSelectedItem()+"'";
-        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-        pst.execute();
-        JOptionPane.showMessageDialog(null, "Data akan dihapus");
-        
-    } catch (SQLException | HeadlessException e) {}
-    
+       delete_data();    
     GetData();
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        // TODO add your handling code here:
-        try {
-            String sql = "update pegawai SET nama_pegawai='"+txtNamaPegawai.getText()+"',alamat='"+txtAlamat.getText()+"',jenis_kelamin='"+cmbJenisKelamin.getSelectedItem()+"',no_hp='"+txtNoHp.getText()+"',agama='"+cmbAgama.getSelectedItem()+"' where kode_pegawai='"+txtKodePegawai.getText()+"'";
-            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil disimpan");
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    
+        // TODO add your handling code here:       
+    update_data();
     GetData();
     cleardata();
     }//GEN-LAST:event_btnUbahActionPerformed
@@ -338,22 +362,7 @@ public void tampil_combo()
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
         // TODO add your handling code here:
-        if(cmbAksi.getSelectedItem()=="Semua"){
-        GetData();
-        
-        }else{
-            
-            
-        try {
-        Connection conn;
-        conn = (Connection)koneksi.koneksiDB();
-        java.sql.Statement stm = conn.createStatement();
-        java.sql.ResultSet sql = stm.executeQuery("select * from pegawai where kode_pegawai='"+cmbAksi.getSelectedItem()+"'");
-        tblPegawai.setModel(DbUtils.resultSetToTableModel(sql));
-    }
-    catch (SQLException | HeadlessException e) {
-    }
-            }
+       search_data();
     }//GEN-LAST:event_btnCariActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed

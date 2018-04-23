@@ -38,6 +38,57 @@ public class Penjualan extends javax.swing.JFrame {
         txtJumlah.setText("");
         txtTotal.setText("");
     }
+      public void insert_data(){
+              try {
+            String sql = "INSERT INTO penjualan(kode_pegawai, kode_barang, jumlah, total) VALUES ('"+cmbIdPegawai.getSelectedItem()+"','"+cmbKodeBarang.getSelectedItem()+"','"+txtJumlah.getText()+"','"+txtTotal.getText()+"')";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil disimpan");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        }
+        public void delete_data(){
+               try { // hapus data
+        String sql ="delete from penjualan where kode_penjualan='"+cmbAksi.getSelectedItem()+"'";
+        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        pst.execute();
+        JOptionPane.showMessageDialog(null, "Data akan dihapus");
+        
+    } catch (SQLException | HeadlessException e) {}
+    
+        }
+        public void search_data(){
+            if(cmbAksi.getSelectedItem()=="Semua"){
+        GetData();
+        
+        }else{
+            
+            
+        try {
+        Connection conn;
+        conn = (Connection)koneksi.koneksiDB();
+        java.sql.Statement stm = conn.createStatement();
+        java.sql.ResultSet sql = stm.executeQuery("select penjualan.kode_penjualan,pegawai.nama_pegawai,barang.nama_barang, barang.harga,barang.jenis,penjualan.jumlah,penjualan.total from pegawai inner join (penjualan inner join barang on penjualan.kode_barang = barang.kode_barang ) on penjualan.kode_pegawai = pegawai.kode_pegawai where kode_penjualan='"+cmbAksi.getSelectedItem()+"'");
+        tblPenjualan.setModel(DbUtils.resultSetToTableModel(sql));
+    }
+    catch (SQLException | HeadlessException e) {
+    }
+            }
+        }
+        public void update_data(){
+            try {
+            String sql = "update penjualan SET kode_pegawai='"+cmbIdPegawai.getSelectedItem()+"',kode_barang='"+cmbKodeBarang.getSelectedItem()+"',jumlah='"+txtJumlah.getText()+"',total='"+txtTotal.getText()+"' where kode_penjualan='"+txtKodeTransaksi.getText()+"'";
+            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "berhasil diubah");
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        }
     private void GetData(){ // menampilkan data dari database
     try {
         Connection conn;
@@ -358,15 +409,7 @@ txtTotal.setText(String.valueOf(total));
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
-          try {
-            String sql = "INSERT INTO penjualan(kode_pegawai, kode_barang, jumlah, total) VALUES ('"+cmbIdPegawai.getSelectedItem()+"','"+cmbKodeBarang.getSelectedItem()+"','"+txtJumlah.getText()+"','"+txtTotal.getText()+"')";
-            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil disimpan");
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+        insert_data();
     
     GetData();
         cleardata();
@@ -399,15 +442,7 @@ txtTotal.setText(String.valueOf(total));
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
         // TODO add your handling code here:
-         try {
-            String sql = "update penjualan SET kode_pegawai='"+cmbIdPegawai.getSelectedItem()+"',kode_barang='"+cmbKodeBarang.getSelectedItem()+"',jumlah='"+txtJumlah.getText()+"',total='"+txtTotal.getText()+"' where kode_penjualan='"+txtKodeTransaksi.getText()+"'";
-            java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(null, "berhasil diubah");
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+         update_data();
     
     GetData();
     cleardata();
@@ -439,37 +474,14 @@ txtTotal.setText(String.valueOf(total));
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
         // TODO add your handling code here:
-         try { // hapus data
-        String sql ="delete from penjualan where kode_penjualan='"+cmbAksi.getSelectedItem()+"'";
-        java.sql.Connection conn = (java.sql.Connection)koneksi.koneksiDB();
-        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-        pst.execute();
-        JOptionPane.showMessageDialog(null, "Data akan dihapus");
-        
-    } catch (SQLException | HeadlessException e) {}
-    
+      delete_data();
     GetData();
    
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
         // TODO add your handling code here:
-        if(cmbAksi.getSelectedItem()=="Semua"){
-        GetData();
-        
-        }else{
-            
-            
-        try {
-        Connection conn;
-        conn = (Connection)koneksi.koneksiDB();
-        java.sql.Statement stm = conn.createStatement();
-        java.sql.ResultSet sql = stm.executeQuery("select penjualan.kode_penjualan,pegawai.nama_pegawai,barang.nama_barang, barang.harga,barang.jenis,penjualan.jumlah,penjualan.total from pegawai inner join (penjualan inner join barang on penjualan.kode_barang = barang.kode_barang ) on penjualan.kode_pegawai = pegawai.kode_pegawai where kode_penjualan='"+cmbAksi.getSelectedItem()+"'");
-        tblPenjualan.setModel(DbUtils.resultSetToTableModel(sql));
-    }
-    catch (SQLException | HeadlessException e) {
-    }
-            }
+        search_data();
     }//GEN-LAST:event_btnCariActionPerformed
 
     private void txtJumlahFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtJumlahFocusLost
